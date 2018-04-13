@@ -20,6 +20,6 @@
                 --port pan_tilt_port
                 tilt_controller"
           output="screen"/> 
-   <param name="Qtd_Pos" value="36" type="int"/> 
+   <param name="Qtd_Pos" value="6" type="int"/> 
    <node pkg="dynamixel_position_control" type="motor_controller" name="motor_controller" output="screen"/>
 </launch>

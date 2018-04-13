@@ -3,7 +3,7 @@
 // MsgTutorial Message File Header
 // The header file is automatically created when building the package.
 
-#include "my_dynamixel_controller/MsgDynamixel.h"
+#include "dynamixel_position_control/MsgDynamixel.h"
 #include "dynamixel_msgs/JointState.h"
 
 #define GOAL_POS 0
@@ -15,7 +15,6 @@
 #define TX 0
 #define RX 1
 
-
 void motor_command(ros::Publisher dynamixel_publisher);
 bool motor_init(float qtd_pos);
 
@@ -23,7 +22,7 @@ struct Motor{
  float motor_state[4], count, pos;
  int Estado;
  bool moving;
- my_dynamixel_controller::MsgDynamixel msg;
+ dynamixel_position_control::MsgDynamixel msg;
 }MX28;
 
 bool motor_init(float qtd_pos)
@@ -62,10 +61,10 @@ int main(int argc, char **argv)
    
   if(!motor_init(qtd_pos)) return 0;
 
-  ros::Publisher dynamixel_publisher = nh.advertise<my_dynamixel_controller::MsgDynamixel>("tilt_controller/command", 100); 
+  ros::Publisher dynamixel_publisher = nh.advertise<dynamixel_position_control::MsgDynamixel>("tilt_controller/command", 100); 
   ros::Subscriber dynamixel_subscriber = nh.subscribe("tilt_controller/state", 100, msgCallback);
   
-  ros::Rate loop_rate(5); // Set the loop period (Hz)
+  ros::Rate loop_rate(6); // Set the loop period (Hz)
   	
   //ros::spinOnce();
   
@@ -81,7 +80,6 @@ int main(int argc, char **argv)
 
 void motor_command(ros::Publisher dynamixel_publisher)
 {
-  
   switch(MX28.Estado)
   {
    case TX:
