@@ -19,7 +19,7 @@
           args="--manager=dxl_manager
                 --port pan_tilt_port
                 tilt_controller"
-          output="screen"/>
-  <param name="Qtd_Pos" value="30" type="int"/> 
-  <node pkg="dynamixel_position_control" type="motor_controller" name="motor_controller" output="screen"/> 
+          output="screen"/> 
+   <param name="Qtd_Pos" value="36" type="int"/> 
+   <node pkg="dynamixel_position_control" type="motor_controller" name="motor_controller" output="screen"/>
 </launch>

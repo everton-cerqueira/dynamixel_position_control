@@ -10,15 +10,8 @@
 #define CURRENT_POS 1
 #define ERROR 2
 #define LOAD 3
-
-#define START 0
-#define HALF_PI 1
-#define PI 2
-#define PI_HALF 3
-#define TWO_PI 4
-#define ERROR_POS 0.05
-#define ERROR_NEG -0.05
-
+#define ERROR_POS 0.01
+#define ERROR_NEG -0.01
 #define TX 0
 #define RX 1
 
@@ -35,13 +28,16 @@ struct Motor{
 
 bool motor_init(float qtd_pos)
 {
-  if(qtd_pos > 50 || qtd_pos <= 0){
-   ROS_ERROR("Qtd_pos value should be between 0 and 6.14");
+  if(qtd_pos > 360 || qtd_pos <= 0){
+   ROS_ERROR("Qtd_pos value should be between 0 and 360");
    return false;
   }
   MX28.Estado = TX; 
   MX28.count = 0;
   MX28.pos = 6.14/qtd_pos;
+  for(int i = 0; i < 4; i++) MX28.motor_state[i] = 0xff;
+  MX28.moving = false;
+  MX28.msg.data = 0;   
   return true;
 }
 
@@ -52,11 +48,6 @@ void msgCallback(const dynamixel_msgs::JointState::ConstPtr& msg)
  MX28.motor_state[ERROR] = msg->error;
  MX28.motor_state[LOAD] = msg->load;
  MX28.moving = msg->is_moving;   
- 
- /*ROS_INFO("Goal Position = %f", msg->goal_pos);	 
-   ROS_INFO("Current Position = %f", msg->current_pos); 
-   ROS_INFO("Error = %f", msg->error); 
-   ROS_INFO("Moving = %i", msg->is_moving);*/
 }  
 
 
@@ -73,7 +64,6 @@ int main(int argc, char **argv)
 
   ros::Publisher dynamixel_publisher = nh.advertise<my_dynamixel_controller::MsgDynamixel>("tilt_controller/command", 100); 
   ros::Subscriber dynamixel_subscriber = nh.subscribe("tilt_controller/state", 100, msgCallback);
- 
   
   ros::Rate loop_rate(5); // Set the loop period (Hz)
   	
@@ -108,7 +98,7 @@ void motor_command(ros::Publisher dynamixel_publisher)
      MX28.count += MX28.pos;
      if(MX28.count >= 6.14) MX28.count = 0;
      MX28.Estado = TX;  	  
-     }else MX28.Estado = TX; 	 
+    }else MX28.Estado = TX; 	 
    break;		
   }		
 } 
